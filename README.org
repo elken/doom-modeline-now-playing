@@ -7,17 +7,18 @@ Simple [[https://github.com/seagle0128/doom-modeline][doom-modeline]] segment to
 * Install
 ** Dependencies
 + [[https://github.com/altdesktop/playerctl][playerctl]]
+
   Installation instructions should be linked above. If your OS doesn't support `playerctl`, please contribute alternatives!
 
 ** Manual
-Add after `doom-modeline` on your load path, and add to your config in "Usage"
+Add after =doom-modeline= on your load path, and add to your config in "Usage"
 
 ** MELPA
 Coming Soon®
 
 *  Usage
 
-Add to any `modeline` config you want, an example is listed below
+Add to any =modeline= config you want, an example is listed below
 
 #+begin_src emacs-lisp
 (doom-modeline-def-modeline 'main
