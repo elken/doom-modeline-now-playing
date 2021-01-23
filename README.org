@@ -1,0 +1,26 @@
+#+TITLE: Readme
+
+Simple [[https://github.com/seagle0128/doom-modeline][doom-modeline]] segment to display information about the currently playing song in the modeline.
+
+[[file:.github/demo.png]]
+
+* Install
+** Dependencies
++ [[https://github.com/altdesktop/playerctl][playerctl]]
+  Installation instructions should be linked above. If your OS doesn't support `playerctl`, please contribute alternatives!
+
+** Manual
+Add after `doom-modeline` on your load path, and add to your config in "Usage"
+
+** MELPA
+Coming Soon®
+
+*  Usage
+
+Add to any `modeline` config you want, an example is listed below
+
+#+begin_src emacs-lisp
+(doom-modeline-def-modeline 'main
+    '(bar workspace-name exwm-workspaces modals matches buffer-info remote-host parrot selection-info)
+    '(now-playing objed-state misc-info persp-name grip mu4e gnus github debug repl lsp minor-modes major-mode process vcs checker))
+#+end_src
