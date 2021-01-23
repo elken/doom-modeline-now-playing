@@ -7,9 +7,8 @@
 ;; Created: January 23, 2021
 ;; Modified: January 23, 2021
 ;; Version: 0.0.1
-;; Keywords: modeline music
 ;; Homepage: https://github.com/elken/doom-modeline-now-playing
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -21,7 +20,7 @@
 ;;
 ;;; Code:
 
-(require 'cl-macs)
+(require 'cl-lib)
 (require 'doom-modeline)
 (require 'async)
 
