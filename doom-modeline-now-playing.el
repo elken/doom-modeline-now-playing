@@ -92,7 +92,7 @@ As well as a number of functions:
 (cl-defstruct (now-playing-status (:constructor now-playing-status-create))
   status player text)
 
-(defvar doom-modeline-now-playing-status (now-playing-status-create))
+(defvar doom-modeline-now-playing-status nil)
 (defun doom-modeline-now-playing--update ()
   "Update the tokens for now-playing."
   (when (and doom-modeline-now-playing
@@ -108,7 +108,7 @@ As well as a number of functions:
                   (mapconcat 'identity doom-modeline-now-playing-ignored-players ",")
                   doom-modeline-now-playing-format))))
      (lambda (result)
-       (message result)
+       (message "")
        (let ((tokens (split-string result "|")))
          (setq doom-modeline-now-playing-status
                (now-playing-status-create :player (elt tokens 0)
@@ -122,9 +122,9 @@ As well as a number of functions:
       (cancel-timer doom-modeline-now-playing--timer))
   (setq doom-modeline-now-playing--timer
         (when doom-modeline-now-playing
-          `(run-with-timer
-            0
-           ,doom-modeline-now-playing-interval
+          (run-with-timer
+            1
+           doom-modeline-now-playing-interval
            #'doom-modeline-now-playing--update))))
 
 (doom-modeline-add-variable-watcher
