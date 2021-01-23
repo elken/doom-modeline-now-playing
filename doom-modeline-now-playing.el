@@ -142,7 +142,7 @@ variables for update interval, output format, etc."
   (when (and doom-modeline-now-playing
              (doom-modeline--active)
              doom-modeline-now-playing-status
-             (not (string= (now-playing-status-text doom-modeline-now-playing-status) "No players found")))
+             (not (string= (now-playing-status-player doom-modeline-now-playing-status) "No players found")))
     (let ((player (now-playing-status-player doom-modeline-now-playing-status))
           (status (now-playing-status-status doom-modeline-now-playing-status))
           (text   (now-playing-status-text   doom-modeline-now-playing-status)))
