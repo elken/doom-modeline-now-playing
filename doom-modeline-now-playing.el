@@ -136,6 +136,14 @@ As well as a number of functions:
 
 (doom-modeline-now-playing-timer)
 
+(defun now-playing-toggle-status ()
+  "Toggle the current status (primarily used by the status icon)"
+  (interactive)
+  (let ((command (format "playerctl --player=%s play-pause"
+                         (now-playing-status-player doom-modeline-now-playing-status))))
+    (start-process-shell-command "playerctl" nil command)
+  (doom-modeline-now-playing--update)))
+
 (doom-modeline-def-segment now-playing
   "Current status of `playerctl'. Configurable via
 variables for update interval, output format, etc."
@@ -156,11 +164,16 @@ variables for update interval, output format, etc."
                              :face 'doom-modeline-now-playing-icon
                              :v-adjust -0.0575))
        (doom-modeline-spc)
-       (if (equal status "playing")
-           (doom-modeline-icon 'faicon "play" "" ">"
-                               :v-adjust -0.0575)
-         (doom-modeline-icon 'faicon "pause" "" "||"
-                             :v-adjust -0.0575))
+       (propertize (if (equal status "playing")
+                       (doom-modeline-icon 'faicon "play" "" ">"
+                                           :v-adjust -0.0575)
+                     (doom-modeline-icon 'faicon "pause" "" "||"
+                                         :v-adjust -0.0575))
+                   'mouse-face 'mode-line-highlight
+                   'help-echo "mouse-1: Toggle player status"
+                   'local-map (let ((map (make-sparse-keymap)))
+                                (define-key map [mode-line mouse-1] 'now-playing-toggle-status)
+                                map))
        (doom-modeline-spc)
        (propertize
         (truncate-string-to-width text doom-modeline-now-playing-max-length nil nil "...")
