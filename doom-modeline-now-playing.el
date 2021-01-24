@@ -136,8 +136,8 @@ As well as a number of functions:
 
 (doom-modeline-now-playing-timer)
 
-(defun now-playing-toggle-status ()
-  "Toggle the current status (primarily used by the status icon)"
+(defun doom-modeline-now-playing-toggle-status ()
+  "Toggle the current status (primarily used by the status icon)."
   (interactive)
   (let ((command (format "playerctl --player=%s play-pause"
                          (now-playing-status-player doom-modeline-now-playing-status))))
