@@ -172,7 +172,7 @@ variables for update interval, output format, etc."
                    'mouse-face 'mode-line-highlight
                    'help-echo "mouse-1: Toggle player status"
                    'local-map (let ((map (make-sparse-keymap)))
-                                (define-key map [mode-line mouse-1] 'now-playing-toggle-status)
+                                (define-key map [mode-line mouse-1] 'doom-modeline-now-playing-toggle-status)
                                 map))
        (doom-modeline-spc)
        (propertize
