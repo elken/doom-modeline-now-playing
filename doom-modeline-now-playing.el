@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2021 Ellis Kenyő
 ;;
-;; Author: Ellis Kenyő <http://github.com/elken>
+;; Author: Ellis Kenyő <me@elken.dev>
 ;; Maintainer: Ellis Kenyő <me@elken.dev>
 ;; Created: January 23, 2021
 ;; Modified: January 23, 2021
