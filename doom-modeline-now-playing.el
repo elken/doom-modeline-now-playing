@@ -9,7 +9,7 @@
 ;; Version: 0.0.1
 ;; Homepage: https://github.com/elken/doom-modeline-now-playing
 ;; Package-Requires: ((emacs "24.4") (doom-modeline "3.0.0") (async "1.9.3"))
-;; SPDK-License-Identifier: GPL3
+;; SPDX-License-Identifier: GPL3
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
