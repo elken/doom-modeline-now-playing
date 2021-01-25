@@ -2,13 +2,14 @@
 ;;
 ;; Copyright (C) 2021 Ellis Kenyő
 ;;
-;; Author: Ellis Kenyő <http://github/elken>
+;; Author: Ellis Kenyő <http://github.com/elken>
 ;; Maintainer: Ellis Kenyő <me@elken.dev>
 ;; Created: January 23, 2021
 ;; Modified: January 23, 2021
 ;; Version: 0.0.1
 ;; Homepage: https://github.com/elken/doom-modeline-now-playing
 ;; Package-Requires: ((emacs "24.4") (doom-modeline "3.0.0") (async "1.9.3"))
+;; SPDK-License-Identifier: GPL3
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -105,7 +106,7 @@ As well as a number of functions:
         (string-trim
          (shell-command-to-string
           (format "playerctl metadata --ignore-player=%s --format '{{playerName}}|{{lc(status)}}|%s'"
-                  (mapconcat 'identity doom-modeline-now-playing-ignored-players ",")
+                  (mapconcat #'identity doom-modeline-now-playing-ignored-players ",")
                   doom-modeline-now-playing-format))))
      (lambda (result)
        (message "")
