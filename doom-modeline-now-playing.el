@@ -15,10 +15,15 @@
 ;;
 ;;; Commentary:
 ;;
-;;  Depends on `playerctl' currently, not sure if I'm going
+;;  Depends on playerctl currently, not sure if I'm going
 ;;  to add support for anything else but feel free to contribute
 ;;  another provider :D
 ;;
+;;  The below line need to be manually ran somewhere at your behest
+;;
+;;  (doom-modeline-now-playing-timer)
+;;
+;;  If you wish for the staus to update
 ;;; Code:
 
 (require 'cl-lib)
@@ -29,12 +34,20 @@
 ;; Custom variables
 ;;
 
+(defgroup 'doom-modeline-now-playing nil
+  "Settings related to doom-modeline-now-playing"
+  :group 'doom-modeline)
+
+(defgroup 'doom-modeline-now-playing-faces nil
+  "Faces related to doom-modeline-now-playing"
+  :group 'doom-modeline-faces)
+
 (defcustom doom-modeline-now-playing t
-  "Whether to display the `now-playing' segment.
+  "Whether to display the now-playing segment.
 
 Non-nil to display in the modeline"
   :type 'boolean
-  :group 'doom-modeline)
+  :group 'doom-modeline-now-playing)
 
 (defcustom doom-modeline-now-playing-format "{{artist}} - {{title}}"
   "Default output format.
@@ -48,29 +61,29 @@ Supports a number of options \(which must be wrapped in handlebars\)
 - `title': Title of the current track `\'string'
 
 As well as a number of functions:
-- `lc\(\'string\)': Convert string to lowercase
-- `uc\(\'string\)': Convert string to uppercase
-- `duration\(\'integer\)': Convert int to hh:mm:ss
-- `markup_escape\(\'string\)': Escape XML markup
-- `default\(\'any\,\'any\)': Return 1st arg unless null, then return 2nd
-- `emoji\(status|volume\)': Convert either `status' or `volume' to emoji"
+- `lc(\'string)': Convert string to lowercase
+- `uc(\'string)': Convert string to uppercase
+- `duration(\'integer)': Convert int to hh:mm:ss
+- `markup_escape\(\'string)': Escape XML markup
+- `default(\'any\,\'any)': Return 1st arg unless null, then return 2nd
+- `emoji(status|volume)': Convert either status or volume to emoji"
   :type 'string
-  :group 'doom-modeline)
+  :group 'doom-modeline-now-playing)
 
 (defcustom doom-modeline-now-playing-interval 5
   "Default delay in seconds to update the status."
   :type 'integer
-  :group 'doom-modeline)
+  :group 'doom-modeline-now-playing)
 
 (defcustom doom-modeline-now-playing-ignored-players '("firefox")
   "List of players to exclude from output."
   :type '(repeat string)
-  :group 'doom-modeline)
+  :group 'doom-modeline-now-playing)
 
 (defcustom doom-modeline-now-playing-max-length 40
   "Maximum length of output. Truncates with `...' after."
   :type 'integer
-  :group 'doom-modeline)
+  :group 'doom-modeline-now-playing)
 
 ;;
 ;; Faces
@@ -78,13 +91,13 @@ As well as a number of functions:
 
 (defface doom-modeline-now-playing-icon
   '((t (:inherit success)))
-  "Face for the `now-playing' icon"
-  :group 'doom-modeline-faces)
+  "Face for the now-playing icon"
+  :group 'doom-modeline-now-playing-faces)
 
 (defface doom-modeline-now-playing-text
   '((t (:inherit bold)))
-  "Face for the `now-playing' text"
-  :group 'doom-modeline-faces)
+  "Face for the now-playing text"
+  :group 'doom-modeline-now-playing-faces)
 
 ;;
 ;; Segment
@@ -118,7 +131,7 @@ As well as a number of functions:
 
 (defvar doom-modeline-now-playing--timer nil)
 (defun doom-modeline-now-playing-timer ()
-  "Start/Stop the timer for `now-playing' update."
+  "Start/Stop the timer for now-playing update."
   (if (timerp doom-modeline-now-playing--timer)
       (cancel-timer doom-modeline-now-playing--timer))
   (setq doom-modeline-now-playing--timer
@@ -135,8 +148,6 @@ As well as a number of functions:
      (setq doom-modeline-now-playing val)
      (doom-modeline-now-playing-timer))))
 
-(doom-modeline-now-playing-timer)
-
 (defun doom-modeline-now-playing-toggle-status ()
   "Toggle the current status (primarily used by the status icon)."
   (interactive)
@@ -146,7 +157,7 @@ As well as a number of functions:
   (doom-modeline-now-playing--update)))
 
 (doom-modeline-def-segment now-playing
-  "Current status of `playerctl'. Configurable via
+  "Current status of playerctl. Configurable via
 variables for update interval, output format, etc."
   (when (and doom-modeline-now-playing
              (doom-modeline--active)
