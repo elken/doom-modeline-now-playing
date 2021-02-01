@@ -20,7 +20,13 @@ Coming Soon®
 
 *  Usage
 
-Add to any =modeline= config you want, an example is listed below
+Add the below line somewhere in your config after loading the module
+
+#+begin_src emacs-lisp
+(doom-modeline-now-playing-timer)
+#+end_src
+
+And add to any =modeline= config you want, an example is listed below
 
 #+begin_src emacs-lisp
 (doom-modeline-def-modeline 'main
