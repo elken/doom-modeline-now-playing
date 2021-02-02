@@ -34,11 +34,11 @@
 ;; Custom variables
 ;;
 
-(defgroup 'doom-modeline-now-playing nil
+(defgroup doom-modeline-now-playing nil
   "Settings related to doom-modeline-now-playing"
   :group 'doom-modeline)
 
-(defgroup 'doom-modeline-now-playing-faces nil
+(defgroup doom-modeline-now-playing-faces nil
   "Faces related to doom-modeline-now-playing"
   :group 'doom-modeline-faces)
 
