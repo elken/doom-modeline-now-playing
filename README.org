@@ -1,4 +1,5 @@
 #+TITLE: Readme
+[[https://melpa.org/#/doom-modeline-now-playing][file:https://melpa.org/packages/doom-modeline-now-playing-badge.svg]]
 
 Simple [[https://github.com/seagle0128/doom-modeline][doom-modeline]] segment to display information about the currently playing song in the modeline. You can control the format of the modeline segment with =doom-modeline-now-playing-format= (see the documentation for possible options).
 
@@ -16,7 +17,7 @@ It's also possible to toggle the status by clicking the status icon, an interact
 Add after =doom-modeline= on your load path, and add to your config in "Usage"
 
 ** MELPA
-Coming Soon®
+Install =doom-modeline-now-playing= with your MELPA-enabled package manager of choice
 
 *  Usage
 
