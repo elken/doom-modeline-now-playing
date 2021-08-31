@@ -122,7 +122,6 @@ As well as a number of functions:
                   (mapconcat #'identity doom-modeline-now-playing-ignored-players ",")
                   doom-modeline-now-playing-format))))
      (lambda (result)
-       (message "")
        (let ((tokens (split-string result "|")))
          (setq doom-modeline-now-playing-status
                (now-playing-status-create :player (elt tokens 0)
