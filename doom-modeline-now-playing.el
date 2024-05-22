@@ -168,17 +168,17 @@ variables for update interval, output format, etc."
       (concat
        (doom-modeline-spc)
        (if (string= "spotify" player)
-           (doom-modeline-icon 'faicon "spotify" "" "#"
+           (doom-modeline-icon 'faicon "nf-fa-spotify" "" "#"
                                :face 'doom-modeline-now-playing-icon
                                :v-adjust -0.0575)
-         (doom-modeline-icon 'faicon "music" "" "#"
+         (doom-modeline-icon 'faicon "nf-fa-music" "" "#"
                              :face 'doom-modeline-now-playing-icon
                              :v-adjust -0.0575))
        (doom-modeline-spc)
        (propertize (if (equal status "playing")
-                       (doom-modeline-icon 'faicon "play" "" ">"
+                       (doom-modeline-icon 'faicon "nf-fa-play" "" ">"
                                            :v-adjust -0.0575)
-                     (doom-modeline-icon 'faicon "pause" "" "||"
+                     (doom-modeline-icon 'faicon "nf-fa-pause" "" "||"
                                          :v-adjust -0.0575))
                    'mouse-face 'mode-line-highlight
                    'help-echo "mouse-1: Toggle player status"
