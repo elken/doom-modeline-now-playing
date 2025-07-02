@@ -1,36 +1,145 @@
-#+TITLE: Readme
+#+TITLE: doom-modeline-now-playing
 [[https://melpa.org/#/doom-modeline-now-playing][file:https://melpa.org/packages/doom-modeline-now-playing-badge.svg]]
 
-Simple [[https://github.com/seagle0128/doom-modeline][doom-modeline]] segment to display information about the currently playing song in the modeline. You can control the format of the modeline segment with =doom-modeline-now-playing-format= (see the documentation for possible options).
+Cross-platform [[https://github.com/seagle0128/doom-modeline][doom-modeline]] segment to display information about the currently playing song. Supports both Linux (via [[https://github.com/altdesktop/playerctl][playerctl]]) and macOS (via AppleScript).
 
-It's also possible to toggle the status by clicking the status icon, an interactive function is also provided: =now-playing-toggle-status.=
+You can click the status icon to toggle play/pause, or use the interactive function =doom-modeline-now-playing-toggle-status=.
 
 [[file:.github/demo.png]]
 
+* Features
+- *Cross-platform*: Works on Linux (playerctl) and macOS (AppleScript)
+- *Customizable*: Control update interval, text length, and playerctl format
+- *Interactive*: Click to play/pause or use keyboard commands
+- *Multiple players*: Supports Spotify, Music.app, and any MPRIS-compatible player
+- *Modular*: Clean provider-based architecture for easy extension
+
 * Install
 ** Dependencies
-+ [[https://github.com/altdesktop/playerctl][playerctl]]
+*** Linux
++ [[https://github.com/altdesktop/playerctl][playerctl]] - For MPRIS-compatible media players
+  #+begin_src bash
+  # Arch Linux
+  sudo pacman -S playerctl
 
-  Installation instructions should be linked above. If your OS doesn't support `playerctl`, please contribute alternatives!
+  # Ubuntu/Debian
+  sudo apt install playerctl
+
+  # Fedora
+  sudo dnf install playerctl
+  #+end_src
+
+*** macOS
++ Built-in AppleScript support (no additional dependencies)
++ Supports Spotify, Music.app, and other AppleScript-compatible players
 
 ** Manual
-Add after =doom-modeline= on your load path, and add to your config in "Usage"
+Add the package to your load path after =doom-modeline=:
+#+begin_src emacs-lisp
+(add-to-list 'load-path "/path/to/doom-modeline-now-playing")
+(require 'doom-modeline-now-playing)
+#+end_src
 
 ** MELPA
-Install =doom-modeline-now-playing= with your MELPA-enabled package manager of choice
+Install =doom-modeline-now-playing= with your package manager:
+#+begin_src emacs-lisp
+;; use-package
+(use-package doom-modeline-now-playing
+  :after doom-modeline
+  :config
+  (doom-modeline-now-playing-timer))
 
-*  Usage
+;; straight.el
+(straight-use-package 'doom-modeline-now-playing)
+#+end_src
 
-Add the below line somewhere in your config after loading the module
-
+* Usage
+** Basic Setup
+Add this to your config after loading =doom-modeline=:
 #+begin_src emacs-lisp
 (doom-modeline-now-playing-timer)
 #+end_src
 
-And add to any =modeline= config you want, an example is listed below
-
+** Add to Modeline
+Include =now-playing= in your modeline configuration:
 #+begin_src emacs-lisp
 (doom-modeline-def-modeline 'main
-    '(bar workspace-name exwm-workspaces modals matches buffer-info remote-host parrot selection-info)
-    '(now-playing objed-state misc-info persp-name grip mu4e gnus github debug repl lsp minor-modes major-mode process vcs checker))
+    '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position parrot selection-info)
+    '(now-playing objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method major-mode process vcs checker))
 #+end_src
+
+* Configuration
+** Global Settings
+#+begin_src emacs-lisp
+;; Enable/disable the segment (default: t)
+(setq doom-modeline-now-playing t)
+
+;; Update interval in seconds (default: 5)
+(setq doom-modeline-now-playing-interval 5)
+
+;; Maximum text length before truncation (default: 40)
+(setq doom-modeline-now-playing-max-length 40)
+#+end_src
+
+** Platform-specific Settings
+*** Linux (playerctl)
+#+begin_src emacs-lisp
+;; Customize output format using playerctl template syntax
+(setq doom-modeline-now-playing-playerctl-format "{{artist}} - {{title}}")
+
+;; Ignore specific players (e.g., browser players)
+(setq doom-modeline-now-playing-playerctl-ignored-players '("firefox" "chromium"))
+#+end_src
+
+Available playerctl format options:
+- =playerName= - Player application name
+- =artist= - Track artist
+- =title= - Track title
+- =album= - Album name
+- =status= - Playback status (playing/paused/stopped)
+- =position= - Current position in microseconds
+- =volume= - Volume level
+
+Functions: =lc()=, =uc()=, =duration()=, =markup_escape()=, =default()=, =emoji()=
+
+*** macOS (AppleScript)
+#+begin_src emacs-lisp
+;; Specify which applications to check (default: Spotify and Music)
+(setq doom-modeline-now-playing-macos-players '("Spotify" "Music" "VLC"))
+#+end_src
+
+** Interactive Commands
+#+begin_src emacs-lisp
+;; Toggle play/pause for current player
+M-x doom-modeline-now-playing-toggle-status
+
+;; Start/stop the update timer
+M-x doom-modeline-now-playing-timer
+#+end_src
+
+* Architecture
+The package uses a modular provider-based architecture:
+
+- =doom-modeline-now-playing.el= - Core functionality and UI
+- =doom-modeline-now-playing-playerctl.el= - Linux/playerctl provider
+- =doom-modeline-now-playing-osascript.el= - macOS/AppleScript provider
+
+The appropriate provider is automatically loaded based on your system type.
+
+* Troubleshooting
+** Linux: "No players found"
+- Ensure a supported media player is running
+- Check =doom-modeline-now-playing-playerctl-ignored-players= settings
+- Test playerctl directly: =playerctl status=
+
+** macOS: No AppleScript support
+- Verify the media player supports AppleScript
+- Add unsupported players to =doom-modeline-now-playing-macos-players=
+
+* Contributing
+Contributions welcome! To add support for new platforms:
+
+1. Create a new provider file following the existing pattern
+2. Inherit from =doom-modeline-now-playing-provider=
+3. Implement =doom-modeline-now-playing-provider-get-info= and =doom-modeline-now-playing-provider-play-pause=
+4. Add loading logic to the main file
