@@ -1,13 +1,13 @@
 ;;; doom-modeline-now-playing-playerctl.el --- Provider for playerctl for doom-modeline-now-playing -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 2021-2024 Ellis Kenyő
+;; Copyright (C) 2021-2025 Ellis Kenyő
 ;;
 ;; Author: Ellis Kenyő <me@elken.dev>
 ;; Maintainer: Ellis Kenyő <me@elken.dev>
 ;; Created: July 2, 2025
-;; Modified: July 2, 2025
+;; Modified: July 7, 2025
 ;; Homepage: https://github.com/elken/doom-modeline-now-playing
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: GPL3
 ;;
@@ -21,7 +21,7 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'doom-modeline-now-playing)
+(require 'doom-modeline-now-playing-core)
 
 ;;
 ;; Custom variables
@@ -57,7 +57,7 @@ As well as a number of functions:
 ;; Provider implementation
 ;;
 
-(defclass doom-modeline-now-playing-playerctl (doom-modeline-now-playing-provider eieio-default-superclass)
+(defclass doom-modeline-now-playing-playerctl (doom-modeline-now-playing-provider)
   ((name :initform "playerctl")
    (supported-p :initform (lambda ()
                            (and (eq system-type 'gnu/linux)
@@ -94,6 +94,7 @@ As well as a number of functions:
 ;; Constructor function
 ;;
 
+;;;###autoload
 (defun doom-modeline-now-playing-playerctl-create ()
   "Create a new playerctl provider instance."
   (make-instance 'doom-modeline-now-playing-playerctl))

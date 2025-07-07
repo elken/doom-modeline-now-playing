@@ -1,12 +1,12 @@
 ;;; doom-modeline-now-playing.el --- Segment for Doom Modeline to show media player information -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 2021-2024 Ellis Kenyő
+;; Copyright (C) 2021-2025 Ellis Kenyő
 ;;
 ;; Author: Ellis Kenyő <me@elken.dev>
 ;; Maintainer: Ellis Kenyő <me@elken.dev>
 ;; Created: January 23, 2021
-;; Modified: July 2, 2025
-;; Version: 1.0.0
+;; Modified: July 7, 2025
+;; Version: 1.0.1
 ;; Homepage: https://github.com/elken/doom-modeline-now-playing
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: GPL3
@@ -25,15 +25,14 @@
 
 (require 'cl-lib)
 (require 'doom-modeline)
-(require 'eieio)
+(require 'doom-modeline-now-playing-core)
+
+(declare-function doom-modeline-now-playing-playerctl-create "doom-modeline-now-playing-playerctl")
+(declare-function doom-modeline-now-playing-osascript-create "doom-modeline-now-playing-osascript")
 
 ;;
 ;; Custom variables
 ;;
-
-(defgroup doom-modeline-now-playing nil
-  "Settings related to `doom-modeline-now-playing'."
-  :group 'doom-modeline)
 
 (defcustom doom-modeline-now-playing t
   "Whether to display the now-playing segment."
@@ -61,52 +60,10 @@ Truncates with `...' after."
   "Face for the now-playing text."
   :group 'doom-modeline-faces)
 
-(defcustom doom-modeline-now-playing-current-provider
-  (cond
-   ((and (eq system-type 'gnu/linux)
-         (require 'doom-modeline-now-playing-playerctl nil t))
-    (doom-modeline-now-playing-playerctl-create))
-   ((and (eq system-type 'darwin)
-         (require 'doom-modeline-now-playing-osascript nil t))
-    (doom-modeline-now-playing-osascript-create)))
-  "The current provider to use for running commands."
+(defcustom doom-modeline-now-playing-current-provider nil
+  "The current provider to use for running commands.
+This will be automatically initialized when first accessed."
   :group 'doom-modeline-now-playing)
-
-;;
-;; Core classes
-;;
-
-(defclass doom-modeline-now-playing-status ()
-  ((status :initarg :status
-           :type string
-           :documentation "Playback status (playing, paused, etc.)")
-   (player :initarg :player
-           :type string
-           :documentation "Player name (spotify, music, etc.)")
-   (text :initarg :text
-         :type string
-         :documentation "Track information text"))
-  "Class holding the current playback status.")
-
-(defclass doom-modeline-now-playing-provider ()
-  ((name :initarg :name
-         :type string
-         :documentation "Name of the provider")
-   (supported-p :initarg :supported-p
-                :documentation "Bool or predicate to determine if the provider should run on the current setup.")
-   (current-info :initform nil
-                 :documentation "Current player status or nil if not set"))
-  "Base class for media player providers."
-  :abstract t)
-
-(cl-defmethod doom-modeline-now-playing-provider-get-info ((provider doom-modeline-now-playing-provider))
-  "Get current playback information from PROVIDER.
-Should return a now-playing-status object or nil if no player is active."
-  (error "Method must be implemented by subclass"))
-
-(cl-defmethod doom-modeline-now-playing-provider-play-pause ((provider doom-modeline-now-playing-provider) player)
-  "Toggle playback for PLAYER using PROVIDER."
-  (error "Method must be implemented by subclass"))
 
 ;;
 ;; Variables
@@ -116,28 +73,45 @@ Should return a now-playing-status object or nil if no player is active."
   "Current now-playing status object.")
 
 ;;
+;; Provider initialization
+;;
+
+(defun doom-modeline-now-playing--get-provider ()
+  "Get or initialize the current provider."
+  (unless doom-modeline-now-playing-current-provider
+    (setq doom-modeline-now-playing-current-provider
+          (cond
+           ((and (eq system-type 'gnu/linux)
+                 (require 'doom-modeline-now-playing-playerctl nil t))
+            (doom-modeline-now-playing-playerctl-create))
+           ((and (eq system-type 'darwin)
+                 (require 'doom-modeline-now-playing-osascript nil t))
+            (doom-modeline-now-playing-osascript-create)))))
+  doom-modeline-now-playing-current-provider)
+
+;;
 ;; Core functionality
 ;;
 
 (defun doom-modeline-now-playing--update ()
  "Update the current playback status."
  (when (and doom-modeline-now-playing
-            (> doom-modeline-now-playing-interval 0)
-            doom-modeline-now-playing-current-provider)
-   (let ((supported (oref doom-modeline-now-playing-current-provider supported-p)))
-     (when (if (functionp supported)
-               (funcall supported)
-             supported)
-       (setq doom-modeline-now-playing-status
-             (doom-modeline-now-playing-provider-get-info
-              doom-modeline-now-playing-current-provider))
-       (force-mode-line-update)))))
+            (> doom-modeline-now-playing-interval 0))
+   (when-let ((provider (doom-modeline-now-playing--get-provider)))
+     (let ((supported (oref provider supported-p)))
+       (when (if (functionp supported)
+                 (funcall supported)
+               supported)
+         (setq doom-modeline-now-playing-status
+               (doom-modeline-now-playing-provider-get-info provider))
+         (force-mode-line-update))))))
 
 (defun doom-modeline-now-playing-toggle-status ()
  "Toggle play/pause for the current player."
  (interactive)
- (when-let* ((provider doom-modeline-now-playing-current-provider)
-             (player (oref doom-modeline-now-playing-status player)))
+ (when-let* ((provider (doom-modeline-now-playing--get-provider))
+             (status doom-modeline-now-playing-status)
+             (player (oref status player)))
    (doom-modeline-now-playing-provider-play-pause provider player)
    (doom-modeline-now-playing--update)))
 
