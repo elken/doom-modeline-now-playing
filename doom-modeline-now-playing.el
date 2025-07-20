@@ -145,7 +145,8 @@ This will be automatically initialized when first accessed."
 (doom-modeline-def-segment now-playing
   "Display current media playback status."
   (when (and doom-modeline-now-playing
-             doom-modeline-now-playing-status)
+             doom-modeline-now-playing-status
+             (eieio-object-p doom-modeline-now-playing-status))
     (let ((player (oref doom-modeline-now-playing-status player))
           (status (oref doom-modeline-now-playing-status status))
           (text   (oref doom-modeline-now-playing-status text)))
