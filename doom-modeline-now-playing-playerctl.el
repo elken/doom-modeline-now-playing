@@ -27,6 +27,9 @@
 ;; Custom variables
 ;;
 
+(make-obsolete-variable 'doom-modeline-now-playing-format 'doom-modeline-now-playing-playerctl-format "v1.0.0")
+(make-obsolete-variable 'doom-modeline-now-playing-ignored-players 'doom-modeline-now-playing-playerctl-ignored-players "v1.0.0")
+
 (defcustom doom-modeline-now-playing-playerctl-format "{{artist}} - {{title}}"
   "Default output format for playerctl.
 Supports a number of options (which must be wrapped in handlebars)
@@ -48,7 +51,7 @@ As well as a number of functions:
   :type 'string
   :group 'doom-modeline-now-playing)
 
-(defcustom doom-modeline-now-playing-playerctl-ignored-players '("firefox")
+(defcustom doom-modeline-now-playing-playerctl-ignored-players '("firefox" "plasma-browser-integration")
   "List of players to exclude from playerctl output."
   :type '(repeat string)
   :group 'doom-modeline-now-playing)
@@ -65,29 +68,31 @@ As well as a number of functions:
   "Linux playerctl provider implementation.")
 
 (cl-defmethod doom-modeline-now-playing-provider-get-info ((provider doom-modeline-now-playing-playerctl))
-  "Get playerctl information."
-  (condition-case nil
-      (let* ((ignore-arg (if doom-modeline-now-playing-playerctl-ignored-players
+  "Get playerctl information for PROVIDER."
+  (let* ((ignore-arg (if doom-modeline-now-playing-playerctl-ignored-players
+                         (format "--ignore-player=%s"
+                                 (mapconcat #'identity doom-modeline-now-playing-playerctl-ignored-players ","))
+                       ""))
+         (command (format "playerctl %s metadata --format '{{playerName}}|{{lc(status)}}|%s'"
+                          ignore-arg
+                          doom-modeline-now-playing-playerctl-format))
+         (result (string-trim (shell-command-to-string command))))
+    (when (and result
+               (not (string-empty-p result))
+               (not (string-match-p "No players found" result)))
+      (pcase-let ((`(,player ,status ,text) (split-string result "|")))
+        (make-instance 'doom-modeline-now-playing-status
+                       :status status
+                       :player player
+                       :text text)))))
+
+(cl-defmethod doom-modeline-now-playing-provider-play-pause ((provider doom-modeline-now-playing-playerctl) _player)
+  "Toggle playerctl playback for PROVIDER."
+  (let* ((ignore-arg (if doom-modeline-now-playing-playerctl-ignored-players
                              (format "--ignore-player=%s"
                                      (mapconcat #'identity doom-modeline-now-playing-playerctl-ignored-players ","))
                            ""))
-             (command (format "playerctl %s metadata --format '{{playerName}}|{{lc(status)}}|%s'"
-                              ignore-arg
-                              doom-modeline-now-playing-playerctl-format))
-             (result (string-trim (shell-command-to-string command))))
-        (when (and result
-                   (not (string-empty-p result))
-                   (not (string-match-p "No players found" result)))
-          (pcase-let ((`(,player ,status ,text) (split-string result "|")))
-            (make-instance 'now-playing-status
-                           :status status
-                           :player player
-                           :text text))))
-    (error nil)))
-
-(cl-defmethod doom-modeline-now-playing-provider-play-pause ((provider doom-modeline-now-playing-playerctl) player)
-  "Toggle playerctl playback."
-  (let ((command (format "playerctl --player=%s play-pause" player)))
+         (command (format "playerctl %s play-pause" ignore-arg)))
     (start-process-shell-command "playerctl" nil command)))
 
 ;;
