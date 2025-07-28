@@ -142,41 +142,53 @@ This will be automatically initialized when first accessed."
 ;; Modeline segment
 ;;
 
+(defun doom-modeline-now-playing--icon ()
+  "Return the icon for the now-playing status."
+  (let ((player (oref doom-modeline-now-playing-status player)))
+    (when player
+      (if (string= "spotify" (downcase player))
+          (doom-modeline-icon 'faicon "nf-fa-spotify" "" "#"
+                              :face 'doom-modeline-now-playing-icon
+                              :v-adjust -0.0575)
+        (doom-modeline-icon 'faicon "nf-fa-music" "" "#"
+                            :face 'doom-modeline-now-playing-icon
+                            :v-adjust -0.0575)))))
+
+(defun doom-modeline-now-playing--playing ()
+  "Return the playing status."
+  (let ((status (oref doom-modeline-now-playing-status status)))
+    (when status
+      (if (equal status "playing")
+          (doom-modeline-icon 'faicon "nf-fa-play" "" ">"
+                              :v-adjust -0.0575)
+        (doom-modeline-icon 'faicon "nf-fa-pause" "" "||"
+                            :v-adjust -0.0575)))))
+
+(defun doom-modeline-now-playing--text ()
+  "Return the text from the now-playing status."
+  (let ((text   (oref doom-modeline-now-playing-status text)))
+    (when text
+      (propertize
+       (truncate-string-to-width text doom-modeline-now-playing-max-length nil nil "...")
+       'face 'doom-modeline-now-playing-text))))
+
 (doom-modeline-def-segment now-playing
   "Display current media playback status."
   (when (and doom-modeline-now-playing
              doom-modeline-now-playing-status
              (eieio-object-p doom-modeline-now-playing-status))
-    (let ((player (oref doom-modeline-now-playing-status player))
-          (status (oref doom-modeline-now-playing-status status))
-          (text   (oref doom-modeline-now-playing-status text)))
-      (when (and player status text
-                 (not (string= player "No players found")))
-        (concat
-         (doom-modeline-spc)
-         (if (string= "spotify" (downcase player))
-             (doom-modeline-icon 'faicon "nf-fa-spotify" "" "#"
-                                :face 'doom-modeline-now-playing-icon
-                                :v-adjust -0.0575)
-           (doom-modeline-icon 'faicon "nf-fa-music" "" "#"
-                              :face 'doom-modeline-now-playing-icon
-                              :v-adjust -0.0575))
-         (doom-modeline-spc)
-         (propertize (if (equal status "playing")
-                        (doom-modeline-icon 'faicon "nf-fa-play" "" ">"
-                                          :v-adjust -0.0575)
-                      (doom-modeline-icon 'faicon "nf-fa-pause" "" "||"
-                                        :v-adjust -0.0575))
-                    'mouse-face 'mode-line-highlight
-                    'help-echo "mouse-1: Toggle player status"
-                    'local-map (let ((map (make-sparse-keymap)))
-                               (define-key map [mode-line mouse-1]
-                                         'doom-modeline-now-playing-toggle-status)
-                               map))
-         (doom-modeline-spc)
-         (propertize
-          (truncate-string-to-width text doom-modeline-now-playing-max-length nil nil "...")
-          'face 'doom-modeline-now-playing-text))))))
+    (concat
+     (doom-modeline-spc)
+     (doom-modeline-now-playing--icon)
+     (doom-modeline-spc)
+     (propertize (doom-modeline-now-playing--playing)
+                 'mouse-face 'mode-line-highlight
+                 'help-echo "mouse-1: Toggle player status"
+                 'local-map (let ((map (make-sparse-keymap)))
+                              (define-key map [mode-line mouse-1]
+                                          'doom-modeline-now-playing-toggle-status)))
+     (doom-modeline-spc)
+     (doom-modeline-now-playing--text))))
 
 (provide 'doom-modeline-now-playing)
 ;;; doom-modeline-now-playing.el ends here
