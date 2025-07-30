@@ -84,9 +84,12 @@ This will be automatically initialized when first accessed."
            ((and (eq system-type 'gnu/linux)
                  (require 'doom-modeline-now-playing-playerctl nil t))
             (doom-modeline-now-playing-playerctl-create))
-           ((and (eq system-type 'darwin)
-                 (require 'doom-modeline-now-playing-osascript nil t))
-            (doom-modeline-now-playing-osascript-create)))))
+           ((eq system-type 'darwin)
+            (if (and (executable-find "media-control")
+                     (require 'doom-modeline-now-playing-media-control nil t))
+                (doom-modeline-now-playing-media-control-create)
+              (when (require 'doom-modeline-now-playing-osascript nil t)
+                (doom-modeline-now-playing-osascript)))))))
   doom-modeline-now-playing-current-provider)
 
 ;;

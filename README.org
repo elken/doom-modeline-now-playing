@@ -1,7 +1,7 @@
 #+TITLE: doom-modeline-now-playing
 [[https://melpa.org/#/doom-modeline-now-playing][file:https://melpa.org/packages/doom-modeline-now-playing-badge.svg]]
 
-Cross-platform [[https://github.com/seagle0128/doom-modeline][doom-modeline]] segment to display information about the currently playing song. Supports both Linux (via [[https://github.com/altdesktop/playerctl][playerctl]]) and macOS (via AppleScript).
+Cross-platform [[https://github.com/seagle0128/doom-modeline][doom-modeline]] segment to display information about the currently playing song. Supports both Linux (via [[https://github.com/altdesktop/playerctl][playerctl]]) and macOS (via AppleScript & [[https://github.com/ungive/media-control][media-control]]).
 
 You can click the status icon to toggle play/pause, or use the interactive function =doom-modeline-now-playing-toggle-status=.
 
@@ -30,8 +30,9 @@ You can click the status icon to toggle play/pause, or use the interactive funct
   #+end_src
 
 *** macOS
-+ Built-in AppleScript support (no additional dependencies)
-+ Supports Spotify, Music.app, and other AppleScript-compatible players
++ Attempts to default to [[https://github.com/ungive/media-control][media-control]]
++ Falls back to built-in AppleScript support (no additional dependencies)
++ Supports Spotify, Music.app, and other AppleScript-compatible players or anything [[https://github.com/ungive/media-control][media-control]] supports
 
 ** Manual
 Add the package to your load path after =doom-modeline=:
@@ -123,6 +124,7 @@ The package uses a modular provider-based architecture:
 - =doom-modeline-now-playing.el= - Core functionality and UI
 - =doom-modeline-now-playing-playerctl.el= - Linux/playerctl provider
 - =doom-modeline-now-playing-osascript.el= - macOS/AppleScript provider
+- =doom-modeline-now-playing-media-control.el= - [[https://github.com/ungive/media-control][media-control]] provider
 
 The appropriate provider is automatically loaded based on your system type.
 
