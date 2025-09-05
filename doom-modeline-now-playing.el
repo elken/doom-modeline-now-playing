@@ -147,7 +147,7 @@ This will be automatically initialized when first accessed."
 
 (defun doom-modeline-now-playing--icon ()
   "Return the icon for the now-playing status."
-  (when (eieio-object-p doom-modeline-now-playing-provider)
+  (when (eieio-object-p doom-modeline-now-playing-current-provider)
     (let ((player (oref doom-modeline-now-playing-status player)))
       (when player
         (if (string= "spotify" (downcase player))
@@ -160,18 +160,20 @@ This will be automatically initialized when first accessed."
 
 (defun doom-modeline-now-playing--playing ()
   "Return the playing status."
-  (when (eieio-object-p doom-modeline-now-playing-provider)
+  (when (eieio-object-p doom-modeline-now-playing-current-provider)
     (let ((status (oref doom-modeline-now-playing-status status)))
       (when status
         (if (equal status "playing")
             (doom-modeline-icon 'faicon "nf-fa-play" "" ">"
+				:face 'doom-modeline-now-playing-text
                                 :v-adjust -0.0575)
           (doom-modeline-icon 'faicon "nf-fa-pause" "" "||"
+			      :face 'doom-modeline-now-playing-text
                               :v-adjust -0.0575))))))
 
 (defun doom-modeline-now-playing--text ()
   "Return the text from the now-playing status."
-  (when (eieio-object-p doom-modeline-now-playing-provider)
+  (when (eieio-object-p doom-modeline-now-playing-current-provider)
     (let ((text (oref doom-modeline-now-playing-status text)))
       (when text
         (propertize
