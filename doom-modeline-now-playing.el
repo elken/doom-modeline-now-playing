@@ -165,10 +165,10 @@ This will be automatically initialized when first accessed."
       (when status
         (if (equal status "playing")
             (doom-modeline-icon 'faicon "nf-fa-play" "" ">"
-				:face 'doom-modeline-now-playing-text
+                                :face 'doom-modeline-now-playing-text
                                 :v-adjust -0.0575)
           (doom-modeline-icon 'faicon "nf-fa-pause" "" "||"
-			      :face 'doom-modeline-now-playing-text
+                              :face 'doom-modeline-now-playing-text
                               :v-adjust -0.0575))))))
 
 (defun doom-modeline-now-playing--text ()
@@ -195,7 +195,7 @@ This will be automatically initialized when first accessed."
                  'local-map (let ((map (make-sparse-keymap)))
                               (define-key map [mode-line mouse-1]
                                           #'doom-modeline-now-playing-toggle-status)
-			      map))
+                              map))
      (doom-modeline-spc)
      (doom-modeline-now-playing--text))))
 

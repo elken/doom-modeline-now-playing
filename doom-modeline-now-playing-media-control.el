@@ -51,7 +51,7 @@
     (when json-data
       (let* ((bundle-id (cdr (assoc 'bundleIdentifier json-data)))
              (playing (cdr (assoc 'playing json-data)))
-	     (playing-p (eq playing t))
+             (playing-p (eq playing t))
              (artist (cdr (assoc 'artist json-data)))
              (title (cdr (assoc 'title json-data)))
              (status (if playing-p "playing" "paused"))
