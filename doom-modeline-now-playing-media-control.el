@@ -72,7 +72,7 @@
   "Toggle playback using media-control for PROVIDER.
 PLAYER argument is ignored since media-control operates on the active media session."
   (condition-case nil
-      (shell-command-to-string "media-control play-pause")
+      (shell-command-to-string "media-control toggle-play-pause")
     (error nil)))
 
 ;;
