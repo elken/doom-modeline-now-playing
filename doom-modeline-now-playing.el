@@ -194,7 +194,8 @@ This will be automatically initialized when first accessed."
                  'help-echo "mouse-1: Toggle player status"
                  'local-map (let ((map (make-sparse-keymap)))
                               (define-key map [mode-line mouse-1]
-                                          'doom-modeline-now-playing-toggle-status)))
+                                          #'doom-modeline-now-playing-toggle-status)
+			      map))
      (doom-modeline-spc)
      (doom-modeline-now-playing--text))))
 
