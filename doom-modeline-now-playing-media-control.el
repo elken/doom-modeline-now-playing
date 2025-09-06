@@ -51,9 +51,10 @@
     (when json-data
       (let* ((bundle-id (cdr (assoc 'bundleIdentifier json-data)))
              (playing (cdr (assoc 'playing json-data)))
+             (playing-p (eq playing t))
              (artist (cdr (assoc 'artist json-data)))
              (title (cdr (assoc 'title json-data)))
-             (status (if playing "playing" "paused"))
+             (status (if playing-p "playing" "paused"))
              (player (pcase bundle-id
                        ("com.tidal.desktop" "TIDAL")
                        ("com.spotify.client" "Spotify")
@@ -72,7 +73,7 @@
   "Toggle playback using media-control for PROVIDER.
 PLAYER argument is ignored since media-control operates on the active media session."
   (condition-case nil
-      (shell-command-to-string "media-control play-pause")
+      (shell-command-to-string "media-control toggle-play-pause")
     (error nil)))
 
 ;;
