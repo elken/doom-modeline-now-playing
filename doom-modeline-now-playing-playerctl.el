@@ -63,7 +63,7 @@ As well as a number of functions:
 (defclass doom-modeline-now-playing-playerctl (doom-modeline-now-playing-provider)
   ((name :initform "playerctl")
    (supported-p :initform (lambda () 
-                            (and (memq system-type '(gnu/linux berkeley-unix))
+                            (and (memq system-type '(gnu/linux berkeley-unix bsd))
                                  (executable-find "playerctl")))))
   "Linux/Freebsd playerctl provider implementation.")
 
