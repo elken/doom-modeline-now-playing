@@ -62,10 +62,10 @@ As well as a number of functions:
 
 (defclass doom-modeline-now-playing-playerctl (doom-modeline-now-playing-provider)
   ((name :initform "playerctl")
-   (supported-p :initform (lambda ()
-                           (and (eq system-type 'gnu/linux)
-                                (executable-find "playerctl")))))
-  "Linux playerctl provider implementation.")
+   (supported-p :initform (lambda () 
+                            (and (memq system-type '(gnu/linux berkeley-unix))
+                                 (executable-find "playerctl")))))
+  "Linux/Freebsd playerctl provider implementation.")
 
 (cl-defmethod doom-modeline-now-playing-provider-get-info ((provider doom-modeline-now-playing-playerctl))
   "Get playerctl information for PROVIDER."
