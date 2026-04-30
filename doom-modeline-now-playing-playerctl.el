@@ -65,7 +65,7 @@ As well as a number of functions:
    (supported-p :initform (lambda () 
                             (and (memq system-type '(gnu/linux berkeley-unix bsd))
                                  (executable-find "playerctl")))))
-  "Linux/Freebsd playerctl provider implementation.")
+  "playerctl provider implementation for Linux and BSD systems.")
 
 (cl-defmethod doom-modeline-now-playing-provider-get-info ((provider doom-modeline-now-playing-playerctl))
   "Get playerctl information for PROVIDER."
