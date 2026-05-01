@@ -63,9 +63,9 @@ As well as a number of functions:
 (defclass doom-modeline-now-playing-playerctl (doom-modeline-now-playing-provider)
   ((name :initform "playerctl")
    (supported-p :initform (lambda ()
-                           (and (eq system-type 'gnu/linux)
-                                (executable-find "playerctl")))))
-  "Linux playerctl provider implementation.")
+                            (and (memq system-type '(gnu/linux berkeley-unix bsd))
+                                 (executable-find "playerctl")))))
+  "Playerctl provider implementation.")
 
 (cl-defmethod doom-modeline-now-playing-provider-get-info ((provider doom-modeline-now-playing-playerctl))
   "Get playerctl information for PROVIDER."
@@ -89,9 +89,9 @@ As well as a number of functions:
 (cl-defmethod doom-modeline-now-playing-provider-play-pause ((provider doom-modeline-now-playing-playerctl) _player)
   "Toggle playerctl playback for PROVIDER."
   (let* ((ignore-arg (if doom-modeline-now-playing-playerctl-ignored-players
-                             (format "--ignore-player=%s"
-                                     (mapconcat #'identity doom-modeline-now-playing-playerctl-ignored-players ","))
-                           ""))
+                         (format "--ignore-player=%s"
+                                 (mapconcat #'identity doom-modeline-now-playing-playerctl-ignored-players ","))
+                       ""))
          (command (format "playerctl %s play-pause" ignore-arg)))
     (start-process-shell-command "playerctl" nil command)))
 
